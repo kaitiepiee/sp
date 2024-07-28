@@ -47,7 +47,7 @@ export default function Home() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="program-flow">Program Flow (seperated by commas, e.g 0, 2, 4, 0, 2, 6):</label>
+            <label htmlFor="program-flow">Program Flow (e.g 0, 2, 4, 0, 2, 6):</label>
             <div className="input-group">
               <input type="text" id="program-flow" name="program-flow" />
               <select>
