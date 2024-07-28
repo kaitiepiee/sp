@@ -1,0 +1,19 @@
+{
+  "name": "simulation-project",
+  "version": "1.0.0",
+  "description": "This is a Simulation Project for CSARCH2 by group 4. The project is a Cache simulator (Full associative / LRU) made as a web application that is intended for users to simulate cache memory management. The application displays the total hits, misses, average access time, number of memory accesses.",
+  "main": "script.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "next": "^14.2.5",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}
