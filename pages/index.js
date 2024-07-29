@@ -16,7 +16,7 @@ export default function Home() {
         <link rel="stylesheet" href="/styles.css" />
       </Head>
       <div id="app">
-        <h1>Cache Simulator - FA/LRU</h1>
+        <h1>Cache Simulator (FA/LRU)</h1>
         <h2>Initialization</h2>
         <div id="input-form">
           <div className="form-group left-align">
@@ -25,10 +25,10 @@ export default function Home() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="main-memory-blocks">Main Memory Size:</label>
+            <label htmlFor="main-memory">Main Memory Size:</label>
             <div className="input-group">
               <input type="text" id="main-memory" name="main-memory" />
-              <select>
+              <select id="main-memory-type">
                 <option value="blocks">blocks</option>
                 <option value="words">words</option>
               </select>
@@ -36,10 +36,10 @@ export default function Home() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="cache-size">Cache Memory Size:</label>
+            <label htmlFor="cache-memory">Cache Memory Size:</label>
             <div className="input-group">
               <input type="text" id="cache-memory" name="cache-memory" />
-              <select>
+              <select id="cache-memory-type">
                 <option value="blocks">blocks</option>
                 <option value="words">words</option>
               </select>
@@ -47,20 +47,26 @@ export default function Home() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="program-flow">Program Flow (e.g 0, 2, 4, 0, 2, 6):</label>
+            <label htmlFor="program-flow">Program Flow (e.g., 0, 2, 4, 0, 2, 6):</label>
             <div className="input-group">
               <input type="text" id="program-flow" name="program-flow" />
-              <select>
+              <select id="program-flow-type">
                 <option value="blocks">blocks</option>
                 <option value="words">words</option>
               </select>
             </div>
           </div>
 
-          <div className="form-group left-align">
-            <label htmlFor="miss-penalty">Miss Penalty:</label>
-            <input type="text" id="miss-penalty" name="miss-penalty" />
+          <div className="form-group">
+            <label htmlFor="cache-access-time">Cache Access Time (ns):</label>
+            <input type="text" id="cache-access-time" name="cache-access-time" />
           </div>
+
+          <div className="form-group">
+            <label htmlFor="memory-access-time">Memory Access Time (ns):</label>
+            <input type="text" id="memory-access-time" name="memory-access-time" />
+          </div>
+          
           <button type="button" id="simulate-button" className="simulate-button">Simulate</button>
         </div>
         <div id="output">
