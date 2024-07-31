@@ -8,7 +8,7 @@ This is a Simulation Project for CSARCH2 by Group 4 S11. The project is a Cache 
 
 ## Technologies
 - **Programming Language:** JavaScript
-- **Deployment Platform:** Vercel through this link
+- **Deployment Platform:** Vercel 
 
 ## View Web App
 link: https://csarch2spcachesimulatorfalru-kaitiepiees-projects.vercel.app/
