@@ -29,6 +29,7 @@ To run the project locally, follow these steps:
 6. **Memory Access Time:** Provide the memory access time in nanoseconds (ns).
 7. **Simulate:** Press the "Simulate" button to view the results.
 8. **Download Results:** Press the "Download Results" button to generate the output in a TXT file.
+<img width="332" alt="Screenshot 2024-07-31 at 10 29 54 PM" src="https://github.com/user-attachments/assets/49738693-1784-4b54-bdd1-39713d47615c">
 
 ## Output 
 The simulator will provide the following outputs and solutions:
@@ -37,6 +38,9 @@ The simulator will provide the following outputs and solutions:
 3. **Average Memory Access Time:** Average time taken to access memory.
 4. **Total Memory Access Time:** Total time taken for all memory accesses.
 5. **Cache Snapshot:** A snapshot of the cache's state at each step of the simulation, showing the contents of each cache line
+
+## Further documentation & analysis
+- The file 'CSARCH2 SP Documentation.pdf' in this repository has further documentation and analysis about this project. It shows the test cases, code for the algorithm/calculations, limitations, and realizations about the development of this project.
    
 ## Authors
 - Haneul Kim
