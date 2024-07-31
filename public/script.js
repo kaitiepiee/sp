@@ -11,17 +11,45 @@ if (typeof window !== 'undefined') {
         const cacheAccessTime = parseInt(document.getElementById('cache-access-time').value);
         const memoryAccessTime = parseInt(document.getElementById('memory-access-time').value);
     
+         // Error checking
+         if (isNaN(blockSize) || blockSize <= 0) {
+            alert("Please enter a valid block size greater than 0.");
+            return;
+        }
+        if (!mainMemoryInput || isNaN(parseInt(mainMemoryInput)) || parseInt(mainMemoryInput) <= 0) {
+            alert("Please enter a valid main memory size greater than 0.");
+            return;
+        }
+        if (!cacheMemoryInput || isNaN(parseInt(cacheMemoryInput)) || parseInt(cacheMemoryInput) <= 0) {
+            alert("Please enter a valid cache memory size greater than 0.");
+            return;
+        }
+        if (!programFlowInput || programFlowInput.split(',').some(addr => isNaN(parseInt(addr)))) {
+            alert("Please enter a valid program flow with comma-separated addresses.");
+            return;
+        }
+        if (isNaN(cacheAccessTime) || cacheAccessTime < 0) {
+            alert("Please enter a valid cache access time greater than or equal to 0.");
+            return;
+        }
+        if (isNaN(memoryAccessTime) || memoryAccessTime < 0) {
+            alert("Please enter a valid memory access time greater than or equal to 0.");
+            return;
+        }
+        
         // Convert program flow input to array of numbers
         const programFlow = programFlowInput.split(',').map(Number);
     
         // Determine main memory size
         const mainMemorySize = mainMemoryType === 'blocks'
             ? parseInt(mainMemoryInput)
-            : Math.ceil(parseInt(mainMemoryInput) / blockSize);
+            // else convert to words
+            : Math.ceil(parseInt(mainMemoryInput) / blockSize); 
     
         const cacheMemorySize = cacheMemoryType === 'blocks'
             ? parseInt(cacheMemoryInput)
-            : Math.ceil(parseInt(cacheMemoryInput) / blockSize);
+            // else convert to words
+            : Math.ceil(parseInt(cacheMemoryInput) / blockSize); 
     
         let hits = 0;
         let misses = 0;
