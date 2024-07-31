@@ -39,6 +39,6 @@ The simulator will provide the following outputs and solutions:
 5. **Cache Snapshot:** A snapshot of the cache's state at each step of the simulation, showing the contents of each cache line
    
 ## Authors
-- Hanuel Kim
+- Haneul Kim
 - Luigi Maloles
 - Kait Tighe
