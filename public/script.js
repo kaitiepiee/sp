@@ -63,8 +63,8 @@ if (typeof window !== 'undefined') {
         let tableRows = [];
     
         programFlow.forEach((address) => {
-            let block = Math.floor(address / blockSize);
-            let cacheIndex = cacheData.indexOf(block-1);
+            let block = address / blockSize;
+            let cacheIndex = cacheData.indexOf(block);
             let hitStatus = '';
             let missStatus = '';
             let blockNumber = '';
@@ -80,13 +80,14 @@ if (typeof window !== 'undefined') {
                 // Cache miss
                 missStatus = address;
                 misses++;
-                let lruIndex;
-                if (cacheData.every(block => block !== null)) {
-                  // Cache full, replace least recently used block
-                  lruIndex = cacheTime.indexOf(Math.min(...cacheTime));
-                } else {
-                  // Cache not full, find first empty slot
-                  lruIndex = cacheData.indexOf(null);
+                lruIndex = cacheTime.indexOf(Math.min(...cacheTime));
+                if (lruIndex > cacheMemorySize) // if full
+                {   
+                    lruIndex = cacheTime.indexOf(Math.min(...cacheTime));
+                    blockNumber = lruIndex
+                }
+                else if (lruIndex < blockNumber) { // if cache is not full
+                    lruIndex = cacheData.indexOf(null);
                 }
                 // Replace or add the block in the cache
                 cacheData[lruIndex] = block;
