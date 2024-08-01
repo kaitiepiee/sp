@@ -1,7 +1,8 @@
 if (typeof window !== 'undefined') {
     document.getElementById('simulate-button').addEventListener('click', simulateCache);
-  
+
     function simulateCache() {
+        // Get input values
         const blockSize = parseInt(document.getElementById('block-size').value);
         const mainMemoryInput = document.getElementById('main-memory').value;
         const mainMemoryType = document.querySelector('#main-memory-type').value;
@@ -11,8 +12,8 @@ if (typeof window !== 'undefined') {
         const cacheAccessTime = parseInt(document.getElementById('cache-access-time').value);
         const memoryAccessTime = parseInt(document.getElementById('memory-access-time').value);
     
-         // Error checking
-         if (isNaN(blockSize) || blockSize <= 0) {
+        // Error checking
+        if (isNaN(blockSize) || blockSize <= 0) {
             alert("Please enter a valid block size greater than 0.");
             return;
         }
@@ -36,20 +37,18 @@ if (typeof window !== 'undefined') {
             alert("Please enter a valid memory access time greater than or equal to 0.");
             return;
         }
-        
+    
         // Convert program flow input to array of numbers
         const programFlow = programFlowInput.split(',').map(Number);
     
         // Determine main memory size
         const mainMemorySize = mainMemoryType === 'blocks'
             ? parseInt(mainMemoryInput)
-            // else convert to words
-            : Math.ceil(parseInt(mainMemoryInput) / blockSize); 
+            : Math.ceil(parseInt(mainMemoryInput) / blockSize);
     
         const cacheMemorySize = cacheMemoryType === 'blocks'
             ? parseInt(cacheMemoryInput)
-            // else convert to words
-            : Math.ceil(parseInt(cacheMemoryInput) / blockSize); 
+            : Math.ceil(parseInt(cacheMemoryInput) / blockSize);
     
         let hits = 0;
         let misses = 0;
@@ -57,33 +56,63 @@ if (typeof window !== 'undefined') {
     
         // Cache structure
         const cacheBlocks = cacheMemorySize;
-        const cacheData = new Array(cacheBlocks).fill(null);
-        const cacheTime = new Array(cacheBlocks).fill(0);
+        const cacheData = new Array(cacheBlocks).fill(null); // Cache blocks
+        const cacheTime = new Array(cacheBlocks).fill(0);    // LRU timestamps
     
-        programFlow.forEach(address => {
+        // Prepare for table update
+        let tableRows = [];
+    
+        programFlow.forEach((address) => {
             let block = Math.floor(address / blockSize);
-            let index = cacheData.indexOf(block);
+            let cacheIndex = cacheData.indexOf(block-1);
+            let hitStatus = '';
+            let missStatus = '';
+            let blockNumber = '';
     
-            if (index !== -1) {
-                // Cache hit
-                misses++;
-                cacheTime[index] = ++time;
-            } else {
+            // Debugging 
+            console.log('Address:', address);
+            console.log('Block:', block);
+            console.log('Cache Index:', cacheIndex);
+            console.log('Cache Data:', cacheData);
+            console.log('Cache Time:', cacheTime);
+    
+            if (cacheIndex === -1) {
                 // Cache miss
-                hits++;
-                if (cacheData.includes(null)) {
-                    // Cache not full, just add new block
-                    cacheData[cacheData.indexOf(null)] = block;
-                    cacheTime[cacheData.indexOf(block)] = ++time;
+                missStatus = address;
+                misses++;
+                let lruIndex;
+                if (cacheData.every(block => block !== null)) {
+                  // Cache full, replace least recently used block
+                  lruIndex = cacheTime.indexOf(Math.min(...cacheTime));
                 } else {
-                    // Cache full, replace least recently used block
-                    let lruIndex = cacheTime.indexOf(Math.min(...time));
-                    cacheData[lruIndex] = block;
-                    time[lruIndex] = ++time;
+                  // Cache not full, find first empty slot
+                  lruIndex = cacheData.indexOf(null);
                 }
-            }
-            time++;
+                // Replace or add the block in the cache
+                cacheData[lruIndex] = block;
+                blockNumber = lruIndex;
+                cacheTime[lruIndex] = ++time;
+              } else {
+                // Cache hit
+                hitStatus = address;
+                blockNumber = '';
+                hits++;
+                // Update the LRU timestamp for the current block
+                cacheTime[cacheIndex] = ++time;
+              }
+    
+            // Table for cache snapshot
+            tableRows.push(`
+                <tr>
+                    <td>${address}</td>
+                    <td>${hitStatus !== '' ? hitStatus : ''}</td>
+                    <td>${missStatus !== '' ? missStatus : ''}</td>
+                    <td>${blockNumber !== '' ? blockNumber : ''}</td>
+                </tr>
+            `);
         });
+    
+        document.getElementById('cache-snapshot-body').innerHTML = tableRows.join('');
     
         // Calculations
         const totalAccesses = programFlow.length;
@@ -91,31 +120,22 @@ if (typeof window !== 'undefined') {
         const missRate = misses / totalAccesses;
         const missPenalty = cacheAccessTime + memoryAccessTime + memoryAccessTime + cacheAccessTime;
         const averageAccessTime = (hitRate * cacheAccessTime) + (missRate * missPenalty);
-        const totalAccessTime = (hits * blockSize *cacheAccessTime) +  (misses * blockSize * (memoryAccessTime+1)) + (misses * cacheAccessTime);
+        const totalAccessTime = (hits * blockSize * cacheAccessTime) + (misses * blockSize * (memoryAccessTime + 1)) + (misses * cacheAccessTime);
     
         // Display results
-        document.getElementById('hits').innerText = `Cache Hits: ${hits}`;
-        document.getElementById('misses').innerText = `Cache Misses: ${misses}`;
+        document.getElementById('hits').innerText = `Cache Hits: ${hits}/${totalAccesses}`;
+        document.getElementById('misses').innerText = `Cache Misses: ${misses}/${totalAccesses}`;
         document.getElementById('miss-penalty-output').innerText = `Miss Penalty = ${cacheAccessTime}ns + ${memoryAccessTime}ns + ${memoryAccessTime}ns + ${cacheAccessTime}ns = ${missPenalty}ns`;
         document.getElementById('average-access-time').innerText = `Average Memory Access Time = (${hitRate.toFixed(2)} * ${cacheAccessTime}ns) + (${missRate.toFixed(2)} * ${missPenalty}ns) = ${averageAccessTime.toFixed(2)}ns`;
-        document.getElementById('total-access-time').innerText = `Total access time = (${hits} * ${blockSize} *  ${cacheAccessTime}ns) + (${misses} * ${blockSize} * ${memoryAccessTime}ns +1ns) + (${misses} * ${cacheAccessTime}ns) = ${totalAccessTime.toFixed(2)}ns`;
-    
-        // Display cache snapshot
-        let cacheSnapshot = cacheData.map((block, index) => 
-            `Block: ${block === null ? 'Empty' : block}, Time: ${cacheTime[index]}`
-        ).join('\n');
-        document.getElementById('cache-snapshot').innerText = cacheSnapshot;
+        document.getElementById('total-access-time').innerText = `Total access time = (${hits} * ${blockSize} * ${cacheAccessTime}ns) + (${misses} * ${blockSize} * ${memoryAccessTime}ns +1ns) + (${misses} * ${cacheAccessTime}ns) = ${totalAccessTime.toFixed(2)}ns`;
     }
-  
     document.getElementById('download-results').addEventListener('click', downloadResults);
-  
     function downloadResults() {
-      let resultText = document.getElementById('output').innerText;
-      let blob = new Blob([resultText], { type: 'text/plain' });
-      let link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = 'cache_simulation_results.txt';
-      link.click();
+        let resultText = document.getElementById('output').innerText;
+        let blob = new Blob([resultText], { type: 'text/plain' });
+        let link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'cache_simulation_results.txt';
+        link.click();
     }
-  }
-  
+}

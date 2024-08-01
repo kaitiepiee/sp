@@ -77,10 +77,22 @@ export default function Home() {
           <p id="average-access-time">Average Memory Access Time: </p>
           <p id="total-access-time">Total Memory Access Time: </p>
           <h2>Cache Snapshot</h2>
-          <pre id="cache-snapshot"></pre>
+          <table id="cache-snapshot-table">
+            <thead>
+                <tr>
+                    <th>Seq</th>
+                    <th>Hit</th>
+                    <th>Miss</th>
+                    <th>Block</th>
+                </tr>
+            </thead>
+            <tbody id="cache-snapshot-body">
+            </tbody>
+        </table>
           <button type="button" id="download-results">Download Results</button>
         </div>
       </div>
     </>
   );
 }
+
