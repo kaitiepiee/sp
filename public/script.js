@@ -58,6 +58,7 @@ if (typeof window !== 'undefined') {
         const cacheBlocks = cacheMemorySize;
         const cacheData = new Array(cacheBlocks).fill(null); // Cache blocks
         const cacheTime = new Array(cacheBlocks).fill(0);    // LRU timestamps
+        const cacheState = new Array(cacheBlocks).fill(null); // Cache state data
     
         // Prepare for table update
         let tableRows = [];
@@ -81,28 +82,28 @@ if (typeof window !== 'undefined') {
                 missStatus = address;
                 misses++;
                 lruIndex = cacheTime.indexOf(Math.min(...cacheTime));
-                if (lruIndex > cacheMemorySize) // if full
+                if (lruIndex > cacheMemorySize) // if cache is full
                 {   
                     lruIndex = cacheTime.indexOf(Math.min(...cacheTime));
-                    blockNumber = lruIndex
+                    blockNumber = lruIndex 
                 }
                 else if (lruIndex < blockNumber) { // if cache is not full
-                    lruIndex = cacheData.indexOf(null);
+                    lruIndex = cacheData.indexOf(null); 
                 }
                 // Replace or add the block in the cache
                 cacheData[lruIndex] = block;
                 blockNumber = lruIndex;
                 cacheTime[lruIndex] = ++time;
+                cacheState[lruIndex] = address; 
               } else {
                 // Cache hit
                 hitStatus = address;
-                blockNumber = '';
+                blockNumber = ''; // display empty cell
                 hits++;
-                // Update the LRU timestamp for the current block
                 cacheTime[cacheIndex] = ++time;
               }
     
-            // Table for cache snapshot
+            // Sequence
             tableRows.push(`
                 <tr>
                     <td>${address}</td>
@@ -114,7 +115,7 @@ if (typeof window !== 'undefined') {
         });
     
         document.getElementById('cache-snapshot-body').innerHTML = tableRows.join('');
-    
+
         // Calculations
         const totalAccesses = programFlow.length;
         const hitRate = hits / totalAccesses;
@@ -129,6 +130,15 @@ if (typeof window !== 'undefined') {
         document.getElementById('miss-penalty-output').innerText = `Miss Penalty = ${cacheAccessTime}ns + ${memoryAccessTime}ns + ${memoryAccessTime}ns + ${cacheAccessTime}ns = ${missPenalty}ns`;
         document.getElementById('average-access-time').innerText = `Average Memory Access Time = (${hitRate.toFixed(2)} * ${cacheAccessTime}ns) + (${missRate.toFixed(2)} * ${missPenalty}ns) = ${averageAccessTime.toFixed(2)}ns`;
         document.getElementById('total-access-time').innerText = `Total access time = (${hits} * ${blockSize} * ${cacheAccessTime}ns) + (${misses} * ${blockSize} * ${memoryAccessTime}ns +1ns) + (${misses} * ${cacheAccessTime}ns) = ${totalAccessTime.toFixed(2)}ns`;
+
+        // Update final cache state table
+        let finalCacheRows = cacheState.map((data, index) => `
+            <tr>
+                <td>${index}</td>
+                <td>${data !== null ? data : ''}</td>
+            </tr>
+        `);
+        document.getElementById('final-cache-body').innerHTML = finalCacheRows.join('');
     }
     document.getElementById('download-results').addEventListener('click', downloadResults);
     function downloadResults() {

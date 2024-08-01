@@ -76,7 +76,7 @@ export default function Home() {
           <p id="miss-penalty-output">Miss Penalty: </p>
           <p id="average-access-time">Average Memory Access Time: </p>
           <p id="total-access-time">Total Memory Access Time: </p>
-          <h2>Cache Snapshot</h2>
+          <h2>Program Flow of Hit/Miss</h2>
           <table id="cache-snapshot-table">
             <thead>
                 <tr>
@@ -87,6 +87,17 @@ export default function Home() {
                 </tr>
             </thead>
             <tbody id="cache-snapshot-body">
+            </tbody>
+        </table>
+        <h2>Cache Snapshot</h2>
+        <table id="final-cache-state">
+            <thead>
+                <tr>
+                    <th>Block</th>
+                    <th>Data</th>
+                </tr>
+            </thead>
+            <tbody id="final-cache-body">
             </tbody>
         </table>
           <button type="button" id="download-results">Download Results</button>
